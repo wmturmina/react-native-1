@@ -42,6 +42,7 @@ class App extends Component {
             fotoDePerfil={item.urlPerfil}
             foto={item.urlFoto}
             usuario={item.loginUsuario}
+            liked={item.likeada}
           />
         }
       />
