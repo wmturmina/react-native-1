@@ -6,11 +6,13 @@ import {
   Image,
   Dimensions,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  TextInput
 } from 'react-native'
 
 import BotaoLike from '../resources/img/s2.png'
 import BotaoLiked from '../resources/img/s2-checked.png'
+import BotaoSend from'../resources/img/send.png'
 
 const size = Dimensions.get('screen').width
 
@@ -46,6 +48,20 @@ const styles = StyleSheet.create({
   tituloComentario: {
     fontWeight: 'bold',
     marginRight: 5
+  },
+  input: {
+    flex: 1,
+    height: 40
+  },
+  novoComentario: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  icone: {
+    width: 30,
+    height: 30
   }
 })
 
@@ -55,9 +71,12 @@ class Post extends Component {
     this.state = {
       liked: props.liked,
       likers: props.likers,
-      likedStatus: BotaoLike
+      comentario: props.comentario,
+      likedStatus: BotaoLike,
+      textoComentario: ''
     }
   }
+
   handlerLike = () => {
     let {
       liked,
@@ -87,6 +106,38 @@ class Post extends Component {
     })
   }
 
+  handlerAddComment = () => {
+    let {
+      comentario,
+      textoComentario
+    } = this.state
+    const {
+      usuario
+    } = this.props
+    if (this.state.valorComentario === '') {
+      return
+    }
+
+    comentario = [
+      ...comentario,
+      {
+        id: textoComentario,
+        login: usuario,
+        texto: textoComentario
+      }
+    ]
+    this.inputComentario.clear()
+    this.setState({
+      comentario: comentario,
+      textoComentario: ''
+    })
+  }
+
+  handlerChangeText = (texto) => {
+    this.setState({
+      textoComentario: texto
+    })
+  }
 
   showLikes = () => {
     const {
@@ -104,11 +155,11 @@ class Post extends Component {
     const {
       fotoDePerfil,
       usuario,
-      foto,
-      comentario
+      foto
     } = this.props
     const {
-      likedStatus
+      likedStatus,
+      comentario
     } = this.state
     return (
       <View>
@@ -125,8 +176,12 @@ class Post extends Component {
           source={{uri: foto}}
           style={styles.foto}
         />
-        <View style={styles.rodape}>
-          <TouchableOpacity onPress={this.handlerLike}>
+        <View
+          style={styles.rodape}
+        >
+          <TouchableOpacity
+            onPress={this.handlerLike}
+          >
             <Image
               style={styles.botaoDeLike}
               source={likedStatus}
@@ -134,11 +189,37 @@ class Post extends Component {
           </TouchableOpacity>
           {this.showLikes()}
           {comentario.map((comentario, index) =>
-            <View style={styles.comentario} key={index}>
-              <Text style={styles.tituloComentario}>{comentario.login}</Text>
+            <View
+              style={styles.comentario}
+              key={index}
+            >
+              <Text
+                style={styles.tituloComentario}
+              >
+                  {comentario.login}
+              </Text>
               <Text>{comentario.texto}</Text>
             </View>
           )}
+          <View
+            style={styles.novoComentario}
+          >
+            <TextInput
+              style={styles.input}
+              placeholder="Adicione um comentário..."
+              underlineColorAndroid='transparent'
+              ref={input => this.inputComentario = input}
+              onChangeText={this.handlerChangeText} 
+            />
+            <TouchableOpacity
+              onPress={this.handlerAddComment}
+            >
+              <Image
+                style={styles.icone}
+                source={BotaoSend}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     )
