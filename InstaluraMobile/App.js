@@ -43,6 +43,8 @@ class App extends Component {
             foto={item.urlFoto}
             usuario={item.loginUsuario}
             liked={item.likeada}
+            likers={[0]}
+            comentario={[{login: 'eu', texto: 'texto'}]}
           />
         }
       />
